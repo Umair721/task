@@ -12,7 +12,7 @@ const Login = () => {
     const navigate = useNavigate()
 
 
-
+    //validations
     const validate = values => {
         const errors = {};
         if (!values.email) {
@@ -26,11 +26,12 @@ const Login = () => {
         return errors;
     };
     const submitForm = useCallback(async data => {
+        //    format to send data backend
         const formData = {
             email: data.email,
             password: data.password,
         };
-
+        //redux call function for submit and update
         const result = await actions.submitLogin(dispatch, formData);
         if (result?.status === 200) {
             const response = result?.data;
@@ -49,16 +50,21 @@ const Login = () => {
 
     return (
         <>
+            {/* useFormik   */}
 
             <div className="w-6/12 mx-auto">
                 <Formik
+                    //inititial value set
                     initialValues={{ email: "", password: "" }}
                     validate={validate}
+
+
+                    // function on submit form call
                     onSubmit={values => {
-                        console.log(values, "vllllll")
                         submitForm(values);
                     }}
                 >
+                    {/* props of formik */}
                     {({ values, handleSubmit }) => (
                         <Form
                             onSubmit={handleSubmit}

@@ -1,4 +1,5 @@
 
+const Category = require('../../Model/Category');
 const Vehicle = require('../../Model/Vehicle');
 
 exports.addVehicles = async (req, res) => {
@@ -67,14 +68,37 @@ exports.updateVehicle = async (req, res) => {
         }
     });
 };
+
+
 exports.getAllVehicle = async (req, res) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const vehicles = await Vehicle.findAll();
+            const vehicles = await Vehicle.findAll({
+                include: {
+                    model: Category,
+                    attributes: ['category_name'], // Specify the desired attribute(s) from the categories table
+                },
+            });
+
+            // Process the fetched data
+            const processedVehicles = vehicles.map((vehicle) => {
+                return {
+                    id: vehicle.id,
+                    vehicle_name: vehicle.vehicle_name,
+                    color: vehicle.color,
+                    make: vehicle.make,
+                    registration_num: vehicle.registration_num,
+                    make: vehicle.make,
+                    model: vehicle.model,
+                    // Retrieve the category_name from the associated Category model
+                    category_name: vehicle.Category.category_name,
+                };
+            });
+
             return resolve({
                 code: 200,
                 message: 'Vehicles retrieved successfully!',
-                vehicles,
+                vehicles: processedVehicles,
             });
         } catch (error) {
             console.log(error);
@@ -83,12 +107,14 @@ exports.getAllVehicle = async (req, res) => {
                 message: 'Internal server error.',
             });
         }
-    })
+    });
 };
+
 exports.deleteVehicle = async (req, res) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { id } = req.params;
+            const user_id = req.details.id
 
             // Check if the vehicle exists
             const vehicle = await Vehicle.findByPk(id);
@@ -98,7 +124,12 @@ exports.deleteVehicle = async (req, res) => {
                     message: 'Vehicle not found.',
                 });
             }
-
+            if (vehicle.user_id !== user_id) {
+                return reject({
+                    code: 403,
+                    message: 'You do not have permission to delete this vehicle.',
+                });
+            }
             // Delete the vehicle
             await vehicle.destroy();
 

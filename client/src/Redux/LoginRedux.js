@@ -11,13 +11,6 @@ const types = {
     LOGOUT_SUCCESS: "LOGOUT_SUCCESS",
     LOGOUT_FAILURE: "LOGOUT_FAILURE",
 
-    FACEBOOK_LOGIN_PENDING: "FACEBOOK_LOGIN_PENDING",
-    FACEBOOK_LOGIN_SUCCESS: "FACEBOOK_LOGIN_SUCCESS",
-    FACEBOOK_LOGIN_FAILURE: "FACEBOOK_LOGIN_FAILURE",
-
-    GOOGLE_LOGIN_PENDING: "GOOGLE_LOGIN_PENDING",
-    GOOGLE_LOGIN_SUCCESS: "GOOGLE_LOGIN_SUCCESS",
-    GOOGLE_LOGIN_FAILURE: "GOOGLE_LOGIN_FAILURE",
 };
 export const actions = {
     submitLogin: async (dispatch, data) => {
@@ -42,51 +35,6 @@ export const actions = {
         return json;
     },
 
-    submitFaceBookLogin: async (dispatch, data) => {
-        dispatch({ type: types.FACEBOOK_LOGIN_PENDING });
-        const json = await Api.loginWithSocialAcc(data);
-        console.log(json, "json")
-        if (json !== undefined) {
-            if (200 === json.data.code) {
-                // Omit the password from the response data
-                const responseData = json.data;
-                delete responseData.userInfo.password;
-
-                dispatch({
-                    type: types.FACEBOOK_LOGIN_SUCCESS,
-                    data: responseData,
-                });
-            } else {
-                dispatch({ type: types.FACEBOOK_LOGIN_FAILURE, data: "" });
-            }
-        } else {
-            dispatch({ type: types.FACEBOOK_LOGIN_FAILURE, data: "" });
-        }
-        return json;
-    },
-
-    submitGoogleLogin: async (dispatch, data) => {
-        dispatch({ type: types.GOOGLE_LOGIN_PENDING });
-        const json = await Api.loginWithSocialAcc(data);
-        console.log(json, "json")
-        if (json !== undefined) {
-            if (200 === json.data.code) {
-                // Omit the password from the response data
-                const responseData = json.data;
-                delete responseData.userInfo.password;
-
-                dispatch({
-                    type: types.GOOGLE_LOGIN_SUCCESS,
-                    data: responseData,
-                });
-            } else {
-                dispatch({ type: types.GOOGLE_LOGIN_FAILURE, data: "" });
-            }
-        } else {
-            dispatch({ type: types.GOOGLE_LOGIN_FAILURE, data: "" });
-        }
-        return json;
-    },
 
 
 
@@ -133,69 +81,8 @@ export const reducer = (state = initialState, action) => {
             };
         }
 
-        case types.FACEBOOK_LOGIN_PENDING: {
-            return {
-                ...state,
-                error: "",
-                isSubmitting: true,
-            };
-        }
-        case types.FACEBOOK_LOGIN_SUCCESS: {
-
-            return {
-                ...state,
-                error: "",
-                isSubmitting: false,
-                user: data,
-            };
-        }
-
-        case types.FACEBOOK_LOGIN_FAILURE: {
-            return {
-                ...state,
-                isSubmitting: false,
-                error: data,
-            };
-        }
 
 
-        case types.GOOGLE_LOGIN_PENDING: {
-            return {
-                ...state,
-                error: "",
-                isSubmitting: true,
-            };
-        }
-        case types.GOOGLE_LOGIN_SUCCESS: {
-
-            return {
-                ...state,
-                error: "",
-                isSubmitting: false,
-                user: data,
-            };
-        }
-
-        case types.GOOGLE_LOGIN_FAILURE: {
-            return {
-                ...state,
-                isSubmitting: false,
-                error: data,
-            };
-        }
-
-
-
-
-
-        case types.LOGOUT_SUCCESS: {
-            return {
-                ...state,
-                error: "",
-                isSubmitting: false,
-                user: data,
-            };
-        }
 
 
 

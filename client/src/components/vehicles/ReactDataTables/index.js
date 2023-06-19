@@ -57,9 +57,9 @@ function stableSort(array, comparator) {
 const headCells = [
     {
         id: 'id',
-        numeric: true,
+        numeric: false,
         disablePadding: false,
-        label: 'Category id',
+        label: 'Category name',
     },
     {
         id: 'color',
@@ -299,7 +299,7 @@ export default function EnhancedTable(props) {
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell padding="checkbox">
-                                            {row.category_id}
+                                            {row.category_name}
                                         </TableCell>
                                         <TableCell
                                             component="th"

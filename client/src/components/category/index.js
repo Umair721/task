@@ -85,6 +85,7 @@ const Category = () => {
         <div className="flex h-screen">
             <div className="w-2/12 h-full">
                 <div className="border-r pt-3 h-full">
+                  
                     <Link to="/category" className="px-6 py-2 hover:bg-gray-500 w-full block">
                         Category
                     </Link>
