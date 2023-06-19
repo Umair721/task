@@ -5,6 +5,16 @@ exports.addCategory = async (req, res) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { category_name } = req.body;
+
+      // Check if category_name already exists
+      const existingCategory = await Category.findOne({ where: { category_name } });
+      if (existingCategory) {
+        return reject({
+          code: 400,
+          message: 'Category with the same name already exists.',
+        });
+      }
+
       const category = await Category.create({ category_name });
 
       return resolve({
@@ -21,6 +31,7 @@ exports.addCategory = async (req, res) => {
     }
   })
 };
+
 exports.getAllCategory = async (req, res) => {
   return new Promise(async (resolve, reject) => {
     try {
